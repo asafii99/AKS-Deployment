@@ -3,13 +3,23 @@
 
 trigger: none
 
-pool:
-  vmImage: 'ubuntu-latest'
+pool: Default
 
 stages:
 - stage: provisionAKS
   displayName: Provision an AKS cluster
   jobs:
+    - job: dependencies
+      displayName: Install Dependencies
+      steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
+        
+      - task: KubectlInstaller@0
+        inputs:
+          kubectlVersion: 'latest'
+      
     - job: provision
       displayName: Provision AKS cluster
       steps:
@@ -20,10 +30,11 @@ stages:
         displayName: Terraform Plan
 
 - stage: deployApp
-  displayName: Deploy NGINX deployment
+  displayName: Deploy Nginx deployment
   dependsOn: provisionAKS
   jobs:
     - job: deploy
       displayName: Deploy Manifest files
       steps:
         - script: echo "Deploying Steps here"
+          displayName: Deploy Nginx
