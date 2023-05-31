@@ -12,8 +12,8 @@ stages:
 - stage: provisionAKS
   displayName: Provision an AKS cluster
   jobs:
-    - job: provision
-      displayName: Provision AKS cluster
+    - job: terraformPlan
+      displayName: Terraform Plan for the AKS cluster
       steps:
       - task: TerraformInstaller@0
         inputs:
@@ -44,11 +44,48 @@ stages:
           cd $(System.DefaultWorkingDirectory)/Terraform
           terraform plan -out=plan.out
         displayName: Terraform Plan
+      
+      - task: CopyFiles@2
+        inputs:
+          contents: '$(System.DefaultWorkingDirectory)/Terraform/plan.out'
+          targetFolder: '$(Build.ArtifactStagingDirectory)'
+        displayName: 'Copy Terraform Plan file for later use in the pipeline'
 
+      - publish: '$(Build.ArtifactStagingDirectory)/plan'
+        artifact: terraformPlan
+        displayName: 'Publish Terraform Plan file for later use'
+
+    - job: waitForValidation
+      displayName: Manual Validation
+      pool: server
+      dependsOn: terraformPlan
+      steps:   
       - task: ManualValidation@0
+        timeoutInMinutes: 1440 # task times out in 1 day
         inputs:
           notifyUsers: 'abdullah.safi44@gmail.com'
-        displayName: Validate Terraform Plan
+          instructions: 'Please validate the Terraform Plan'
+        displayName: Wait for external validation
+
+    - job: terraformApply
+      displayName: Provision the AKS cluster
+      dependsOn: waitForValidation
+      steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
+        displayName: Install Terraform
+
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          artifactName: 'terraformPlan'
+          targetPath: '$(System.DefaultWorkingDirectory)/Terraform'
+
+      - script: |
+          cd $(System.DefaultWorkingDirectory)/Terraform
+          terraform init
+        displayName: Terraform Initialization
 
       - script: |
           cd $(System.DefaultWorkingDirectory)/Terraform
