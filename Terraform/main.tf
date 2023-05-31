@@ -24,11 +24,10 @@ provider "azurerm" {
 }
 
 ##
-# Create a resource group for the azure resources
+# Retrieve the existing resource group for the azure resources
 ##
-resource "azurerm_resource_group" "my_rg" {
-  name     = "$(aks_rg_name)"
-  location = "$(aks_location)"
+data "azurerm_resource_group" "my_rg" {
+  name = "$(aks_rg_name)"
 }
 
 ##
