@@ -36,7 +36,7 @@ data "azurerm_resource_group" "my_rg" {
 resource "random_id" "workspace" {
   keepers = {
     # Generate a new id each time we switch to a new resource group
-    group_name = azurerm_resource_group.my_rg.name
+    group_name = data.azurerm_resource_group.my_rg.name
   }
 
   byte_length = 8
@@ -45,14 +45,14 @@ resource "random_id" "workspace" {
 
 resource "azurerm_log_analytics_workspace" "logs" {
   name                = "k8s-workspace-${random_id.workspace.hex}"
-  location            = azurerm_resource_group.my_rg.location
-  resource_group_name = azurerm_resource_group.my_rg.name
+  location            = data.azurerm_resource_group.my_rg.location
+  resource_group_name = data.azurerm_resource_group.my_rg.name
 }
 
 resource "azurerm_log_analytics_solution" "logs" {
   solution_name         = "ContainerInsights"
-  location              = azurerm_resource_group.my_rg.location
-  resource_group_name   = azurerm_resource_group.my_rg.name
+  location              = data.azurerm_resource_group.my_rg.location
+  resource_group_name   = data.azurerm_resource_group.my_rg.name
   workspace_resource_id = azurerm_log_analytics_workspace.logs.id
   workspace_name        = azurerm_log_analytics_workspace.logs.name
 
@@ -67,13 +67,13 @@ resource "azurerm_log_analytics_solution" "logs" {
 ##
 resource "azurerm_virtual_network" "vnet_cluster" {
   name                = "vnet-aks-demo"
-  location            = azurerm_resource_group.my_rg.location
-  resource_group_name = azurerm_resource_group.my_rg.name
+  location            = data.azurerm_resource_group.my_rg.location
+  resource_group_name = data.azurerm_resource_group.my_rg.name
   address_space       = ["10.1.0.0/16"]
 }
 resource "azurerm_subnet" "snet_cluster" {
   name                 = "snet-aks-demo"
-  resource_group_name  = azurerm_resource_group.my_rg.name
+  resource_group_name  = data.azurerm_resource_group.my_rg.name
   virtual_network_name = azurerm_virtual_network.vnet_cluster.name
   address_prefixes     = ["10.1.0.0/24"]
 }
@@ -83,8 +83,8 @@ resource "azurerm_subnet" "snet_cluster" {
 ##
 resource "azurerm_kubernetes_cluster" "my_aks" {
   name                = "$(aks_cluster_name)"
-  location            = azurerm_resource_group.my_rg.location
-  resource_group_name = azurerm_resource_group.my_rg.name
+  location            = data.azurerm_resource_group.my_rg.location
+  resource_group_name = data.azurerm_resource_group.my_rg.name
   dns_prefix          = "aks-cluster"
 
   # Improve security using Azure AD, K8s roles and rolebindings. 
