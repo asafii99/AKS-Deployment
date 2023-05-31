@@ -5,6 +5,9 @@ trigger: none
 
 pool: Default
 
+variables:
+- group: RestorePoint-Demo
+
 stages:
 - stage: provisionAKS
   displayName: Provision an AKS cluster
@@ -15,6 +18,20 @@ stages:
       - task: TerraformInstaller@0
         inputs:
           terraformVersion: 'latest'
+      
+      - task: replacetokens@5
+        inputs:
+          targetFiles: '**/*.tf'
+          encoding: 'auto'
+          tokenPattern: 'azpipelines'
+          writeBOM: true
+          actionOnMissing: 'warn'
+          keepToken: false
+          actionOnNoFiles: 'continue'
+          enableTransforms: false
+          enableRecursion: false
+          useLegacyPattern: false
+          enableTelemetry: true
 
       - script: terraform init
         displayName: Terraform Initialization
