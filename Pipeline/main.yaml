@@ -51,7 +51,7 @@ stages:
           targetFolder: '$(Build.ArtifactStagingDirectory)'
         displayName: 'Copy Terraform Plan file for later use in the pipeline'
 
-      - publish: '$(Build.ArtifactStagingDirectory)/plan'
+      - publish: '$(Build.ArtifactStagingDirectory)/plan.out'
         artifact: terraformPlan
         displayName: 'Publish Terraform Plan file for later use'
 
