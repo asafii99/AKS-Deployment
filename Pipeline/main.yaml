@@ -49,11 +49,11 @@ stages:
         inputs:
           contents: '$(System.DefaultWorkingDirectory)/Terraform/plan.out'
           targetFolder: '$(Build.ArtifactStagingDirectory)'
-        displayName: 'Copy Terraform Plan file for later use in the pipeline'
+        displayName: Copy Terraform Plan file
 
       - publish: '$(Build.ArtifactStagingDirectory)/Terraform/plan.out'
         artifact: terraformPlan
-        displayName: 'Publish Terraform Plan file for later use'
+        displayName: Publish Terraform Plan file
 
     - job: waitForValidation
       displayName: Manual Validation
@@ -81,7 +81,23 @@ stages:
           buildType: 'current'
           artifactName: 'terraformPlan'
           targetPath: '$(System.DefaultWorkingDirectory)/Terraform'
+        displayName: Download Terraform Plan file
 
+      - task: replacetokens@5
+        inputs:
+          targetFiles: '**/*.tf'
+          encoding: 'auto'
+          tokenPattern: 'azpipelines'
+          writeBOM: true
+          actionOnMissing: 'warn'
+          keepToken: false
+          actionOnNoFiles: 'continue'
+          enableTransforms: false
+          enableRecursion: false
+          useLegacyPattern: false
+          enableTelemetry: true
+        displayName: Replace Tokens
+        
       - script: |
           cd $(System.DefaultWorkingDirectory)/Terraform
           terraform init
