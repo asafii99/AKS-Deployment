@@ -18,6 +18,7 @@ stages:
       - task: TerraformInstaller@0
         inputs:
           terraformVersion: 'latest'
+        displayName: Install Terraform
       
       - task: replacetokens@5
         inputs:
@@ -32,6 +33,7 @@ stages:
           enableRecursion: false
           useLegacyPattern: false
           enableTelemetry: true
+        displayName: Replace Tokens
 
       - script: |
           cd $(System.DefaultWorkingDirectory)/Terraform
@@ -40,8 +42,18 @@ stages:
       
       - script: |
           cd $(System.DefaultWorkingDirectory)/Terraform
-          terraform plan
+          terraform plan -out=plan.out
         displayName: Terraform Plan
+
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: 'abdullah.safi44@gmail.com'
+        displayName: Validate Terraform Plan
+
+      - script: |
+          cd $(System.DefaultWorkingDirectory)/Terraform
+          terraform apply plan.out
+        displayName: Terraform Apply
 
 - stage: deployApp
   displayName: Deploy Nginx deployment
@@ -53,3 +65,5 @@ stages:
         - task: KubectlInstaller@0
           inputs:
             kubectlVersion: 'latest'
+          displayName: Install Kubectl
+        
