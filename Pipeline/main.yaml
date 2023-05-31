@@ -38,7 +38,9 @@ stages:
           terraform init
         displayName: Terraform Initialization
       
-      - script: terraform plan
+      - script: |
+          cd $(System.DefaultWorkingDirectory)/Terraform
+          terraform plan
         displayName: Terraform Plan
 
 - stage: deployApp
