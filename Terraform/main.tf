@@ -90,9 +90,8 @@ resource "azurerm_kubernetes_cluster" "my_aks" {
 
   # Improve security using Azure AD, K8s roles and rolebindings. 
   # Each Azure AD user can gets his personal kubeconfig and permissions managed through AD Groups and Rolebindings
-  role_based_access_control_enabled {
-    enabled = true
-  }
+  role_based_access_control_enabled = true
+  
   # Enable Monitoring
   oms_agent {
     log_analytics_workspace_id = azurerm_log_analytics_workspace.logs.id
