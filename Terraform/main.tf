@@ -71,6 +71,7 @@ resource "azurerm_virtual_network" "vnet_cluster" {
   resource_group_name = data.azurerm_resource_group.my_rg.name
   address_space       = ["10.1.0.0/16"]
 }
+
 resource "azurerm_subnet" "snet_cluster" {
   name                 = "snet-aks-demo"
   resource_group_name  = data.azurerm_resource_group.my_rg.name
@@ -94,7 +95,6 @@ resource "azurerm_kubernetes_cluster" "my_aks" {
   # Enable Monitoring
   oms_agent {
     log_analytics_workspace_id = azurerm_log_analytics_workspace.logs.id
-    msi_auth_for_monitoring_enabled = true
   }
   # To prevent CIDR collition with the 10.0.0.0/16 Vnet
   network_profile {
