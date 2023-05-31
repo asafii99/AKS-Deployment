@@ -9,20 +9,13 @@ stages:
 - stage: provisionAKS
   displayName: Provision an AKS cluster
   jobs:
-    - job: dependencies
-      displayName: Install Dependencies
+    - job: provision
+      displayName: Provision AKS cluster
       steps:
       - task: TerraformInstaller@0
         inputs:
           terraformVersion: 'latest'
-        
-      - task: KubectlInstaller@0
-        inputs:
-          kubectlVersion: 'latest'
-      
-    - job: provision
-      displayName: Provision AKS cluster
-      steps:
+
       - script: terraform init
         displayName: Terraform Initialization
       
@@ -36,5 +29,6 @@ stages:
     - job: deploy
       displayName: Deploy Manifest files
       steps:
-        - script: echo "Deploying Steps here"
-          displayName: Deploy Nginx
+        - task: KubectlInstaller@0
+          inputs:
+            kubectlVersion: 'latest'
