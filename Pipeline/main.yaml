@@ -1,0 +1,29 @@
+# RestorePoint Demo
+# Provision and Deploy a simple HTML web application
+
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: provisionAKS
+  displayName: Provision an AKS cluster
+  jobs:
+    - job: provision
+      displayName: Provision AKS cluster
+      steps:
+      - script: terraform init
+        displayName: Terraform Initialization
+      
+      - script: terraform plan
+        displayName: Terraform Plan
+
+- stage: deployApp
+  displayName: Deploy NGINX deployment
+  dependsOn: provisionAKS
+  jobs:
+    - job: deploy
+      displayName: Deploy Manifest files
+      steps:
+        - script: echo "Deploying Steps here"
