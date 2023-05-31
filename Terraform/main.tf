@@ -90,18 +90,13 @@ resource "azurerm_kubernetes_cluster" "my_aks" {
 
   # Improve security using Azure AD, K8s roles and rolebindings. 
   # Each Azure AD user can gets his personal kubeconfig and permissions managed through AD Groups and Rolebindings
-  role_based_access_control {
+  role_based_access_control_enabled {
     enabled = true
   }
-  # Enable Kubernetes Dashboard, if needed
-  addon_profile {
-    kube_dashboard {
-      enabled = true
-    }
-    oms_agent {
-      enabled                    = true
-      log_analytics_workspace_id = azurerm_log_analytics_workspace.logs.id
-    }
+  # Enable Monitoring
+  oms_agent {
+    log_analytics_workspace_id = azurerm_log_analytics_workspace.logs.id
+    msi_auth_for_monitoring_enabled = true
   }
   # To prevent CIDR collition with the 10.0.0.0/16 Vnet
   network_profile {
@@ -116,7 +111,7 @@ resource "azurerm_kubernetes_cluster" "my_aks" {
     name                    = "default"
     node_count              = 3
     vm_size                 = "Standard_D2_v2"
-    availability_zones      = [1, 2, 3]
+    zones                   = [1, 2, 3]
     enable_host_encryption  = true
     vnet_subnet_id          = azurerm_subnet.snet_cluster.id
   }
