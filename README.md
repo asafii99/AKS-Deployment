@@ -1,20 +1,8 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+![RestorePoint.RestorePoint_ai_Logo](https://img1.wsimg.com/isteam/ip/8fbe3f85-1ed1-43b5-b7e5-a0869eeee822/RestorePoint_ai_Logo%20Horizontal_net_Full%20Color.png/:/rs=w:258,h:38,cg:true,m/cr=w:258,h:38/qt=q:100/ll)
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+# RestorePoint Demo
+Provision an AKS cluster and deploy a simple Nginx deployment
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
-
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
-
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+- `Manifest/nginx.yaml:` Kubernetes YAML file that describes a deployment that runs Nginx
+- `Pipeline/main.yaml:` Pipeline YAML file with steps to provision an AKS cluster using Terraform and deploy an Nginx pod using Kubectl
+- `Terraform/main.tf:` HCL defined resource blocks to provision Azure resources
