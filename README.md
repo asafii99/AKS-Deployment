@@ -4,5 +4,10 @@
 Provision an AKS cluster and deploy a simple Nginx deployment
 
 - `Manifest/nginx.yaml:` Kubernetes YAML file that describes a deployment that runs Nginx
-- `Pipeline/main.yaml:` Pipeline YAML file with steps to provision an AKS cluster using Terraform and deploy an Nginx pod using Kubectl
+- `Pipeline/main.yaml:` Pipeline YAML file with steps to provision an AKS cluster using Terraform and deploy an Nginx pod using Kubectl 
 - `Terraform/main.tf:` HCL defined resource blocks to provision Azure resources
+
+# Variables
+
+- Set the `terraformDestroy` pipeline variable to `true` in order to destroy existing Azure resources
+- Variable group `RestorePoint-Demo` is used in the pipeline
