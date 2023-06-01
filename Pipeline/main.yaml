@@ -44,6 +44,7 @@ stages:
 - stage: provisionAKS
   displayName: Provision an AKS cluster
   dependsOn: terraformDestroy
+  condition: eq(dependencies.terraformDestroy.result, 'Skipped')
   jobs:
     - job: terraformPlan
       displayName: Terraform Plan for the AKS cluster
