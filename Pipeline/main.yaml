@@ -16,6 +16,11 @@ stages:
     - job: destroy
       displayName: Destroy the AKS cluster
       steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
+        displayName: Install Terraform
+        
       - task: replacetokens@5
         inputs:
           targetFiles: '**/*.tf'
