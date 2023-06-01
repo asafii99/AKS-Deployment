@@ -145,6 +145,7 @@ stages:
 - stage: deployApp
   displayName: Deploy Nginx deployment
   dependsOn: provisionAKS
+  condition: succeeded()
   jobs:
     - job: deploy
       displayName: Deploy Manifest file
