@@ -9,8 +9,41 @@ variables:
 - group: RestorePoint-Demo
 
 stages:
+- stage: terraformDestroy
+  displayName: Destroy the AKS cluster
+  condition: eq(variables.terraformDestroy, 'true')
+  jobs:
+    - job: destroy
+      displayName: Destroy the AKS cluster
+      steps:
+        - task: replacetokens@5
+        inputs:
+          targetFiles: '**/*.tf'
+          encoding: 'auto'
+          tokenPattern: 'azpipelines'
+          writeBOM: true
+          actionOnMissing: 'warn'
+          keepToken: false
+          actionOnNoFiles: 'continue'
+          enableTransforms: false
+          enableRecursion: false
+          useLegacyPattern: false
+          enableTelemetry: true
+        displayName: Replace Tokens
+
+      - script: |
+          cd $(System.DefaultWorkingDirectory)/Terraform
+          terraform init
+        displayName: Terraform Initialization
+
+      - script: |
+          cd $(System.DefaultWorkingDirectory)/Terraform
+          terraform destroy -auto-approve
+        displayName: Terraform Destroy
+
 - stage: provisionAKS
   displayName: Provision an AKS cluster
+  dependsOn: terraformDestroy
   jobs:
     - job: terraformPlan
       displayName: Terraform Plan for the AKS cluster
@@ -97,7 +130,7 @@ stages:
           useLegacyPattern: false
           enableTelemetry: true
         displayName: Replace Tokens
-        
+
       - script: |
           cd $(System.DefaultWorkingDirectory)/Terraform
           terraform init
@@ -113,10 +146,18 @@ stages:
   dependsOn: provisionAKS
   jobs:
     - job: deploy
-      displayName: Deploy Manifest files
+      displayName: Deploy Manifest file
       steps:
         - task: KubectlInstaller@0
           inputs:
             kubectlVersion: 'latest'
           displayName: Install Kubectl
-        
+
+        - script: |
+          az account set --subscription $(subscription_id)
+          az aks get-credentials --resource-group $(aks_rg_name) --name $(aks_cluster_name)
+          kubectl get nodes
+        displayName: Connect to the AKS cluster
+
+        - script: Kubectl apply -f Manifest/nginx.yaml
+          displayName: Deploy Nginx
