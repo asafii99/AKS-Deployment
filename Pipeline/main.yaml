@@ -16,7 +16,7 @@ stages:
     - job: destroy
       displayName: Destroy the AKS cluster
       steps:
-        - task: replacetokens@5
+      - task: replacetokens@5
         inputs:
           targetFiles: '**/*.tf'
           encoding: 'auto'
@@ -148,16 +148,16 @@ stages:
     - job: deploy
       displayName: Deploy Manifest file
       steps:
-        - task: KubectlInstaller@0
-          inputs:
-            kubectlVersion: 'latest'
-          displayName: Install Kubectl
+      - task: KubectlInstaller@0
+        inputs:
+          kubectlVersion: 'latest'
+        displayName: Install Kubectl
 
-        - script: |
+      - script: |
           az account set --subscription $(subscription_id)
           az aks get-credentials --resource-group $(aks_rg_name) --name $(aks_cluster_name)
           kubectl get nodes
         displayName: Connect to the AKS cluster
 
-        - script: Kubectl apply -f Manifest/nginx.yaml
-          displayName: Deploy Nginx
+      - script: Kubectl apply -f Manifest/nginx.yaml
+        displayName: Deploy Nginx
