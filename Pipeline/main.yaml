@@ -20,7 +20,7 @@ stages:
         inputs:
           terraformVersion: 'latest'
         displayName: Install Terraform
-        
+
       - task: replacetokens@5
         inputs:
           targetFiles: '**/*.tf'
@@ -162,7 +162,7 @@ stages:
 
       - script: |
           az account set --subscription $(subscription_id)
-          az aks get-credentials --resource-group $(aks_rg_name) --name $(aks_cluster_name)
+          az aks get-credentials --resource-group $(aks_rg_name) --name $(aks_cluster_name) --overwrite-existing
           kubectl get nodes
         displayName: Connect to the AKS cluster
 
