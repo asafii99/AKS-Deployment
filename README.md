@@ -1,6 +1,6 @@
 ![RestorePoint.RestorePoint_ai_Logo](https://img1.wsimg.com/isteam/ip/8fbe3f85-1ed1-43b5-b7e5-a0869eeee822/RestorePoint_ai_Logo%20Horizontal_net_Full%20Color.png/:/rs=w:258,h:38,cg:true,m/cr=w:258,h:38/qt=q:100/ll)
 
-# RestorePoint Demo
+# RestorePoint Project
 Provision an AKS cluster and deploy a simple Nginx deployment by using Azure DevOps
 
 - `Manifest/nginx.yaml:` Kubernetes YAML file that describes a deployment that runs Nginx
